@@ -76,13 +76,17 @@
     }
 
     .btn-remove {
-        color: #dc3545;
-        text-decoration: none;
-        font-weight: bold;
+        background-color: #dc3545;
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
     }
 
     .btn-remove:hover {
-        text-decoration: underline;
+        background-color: #c82333;
     }
 
     .cart-actions {
@@ -191,7 +195,11 @@
                             {{ number_format($totalPriceItem, 0, ',', '.') }} đ
                         </td>
                         <td>
-                            <a href="{{ route('cart.remove', $productId) }}" class="btn-remove">Xoá</a>
+                            <form action="{{ route('cart.remove', ['id' => $productId]) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                                @csrf
+                                <button type="submit" class="btn-remove">Xóa</button>
+                            </form>
+                            
                         </td>
                     </tr>
                 @endforeach

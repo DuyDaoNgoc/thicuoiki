@@ -17,13 +17,11 @@
                     {{ __('Sản phẩm') }}
                 </x-nav-link>
 
-                @auth
-                    @if(Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                            {{ __('Quản trị') }}
-                        </x-nav-link>
-                    @endif
-                @endauth
+                @if(Auth::check() && Auth::user()->role === 'admin')
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                        {{ __('Quản trị') }}
+                    </x-nav-link>
+                @endif
             </div>
 
             <!-- User Auth Links -->
@@ -32,111 +30,57 @@
                     {{ __('Giỏ Hàng') }}
                 </x-nav-link>
 
-                @auth
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="auth-button">
-                                <div>{{ Auth::user()->name }}</div>
-                                <div class="ml-1">
-                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
+                @if(Auth::check())
+                    <div class="dropdown">
+                        <button class="auth-button" onclick="document.querySelector('.dropdown-menu').classList.toggle('show')">
+                            <div>{{ Auth::user()->name }}</div>
+                            <div class="ml-1">
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a href="{{ route('profile.edit') }}" class="dropdown-link">
                                 {{ __('Profile') }}
-                            </x-dropdown-link>
-                            <form method="POST" action="{{ route('logout') }}">
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST" id="logout-form">
                                 @csrf
-                                <x-dropdown-link href="#" onclick="event.preventDefault(); this.closest('form').submit();">
+                                <a href="javascript:void(0);" onclick="document.getElementById('logout-form').submit();" class="dropdown-link">
                                     {{ __('Log Out') }}
-                                </x-dropdown-link>
+                                </a>
                             </form>
-                        </x-slot>
-                    </x-dropdown>
+                        </div>
+                    </div>
                 @else
                     <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
                         {{ __('Login') }}
                     </x-nav-link>
-                @endauth
+                @endif
             </div>
 
             <!-- Hamburger -->
             <div class="nav-hamburger">
                 <button @click="open = ! open" class="hamburger-btn">
                     <svg class="hamburger-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" d="M6 18L18 6M6 6l12 12" />
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Responsive Navigation -->
-    <div :class="{ 'block': open, 'hidden': ! open }" class="mobile-nav hidden">
-        <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
-            {{ __('Trang chủ') }}
-        </x-responsive-nav-link>
-        <x-responsive-nav-link :href="route('products')" :active="request()->routeIs('products')">
-            {{ __('Sản phẩm') }}
-        </x-responsive-nav-link>
-        <x-responsive-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
-            {{ __('Giỏ hàng') }}
-        </x-responsive-nav-link>
-
-        @auth
-            @if(Auth::user()->role === 'admin')
-                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                    {{ __('Quản trị') }}
-                </x-responsive-nav-link>
-            @endif
-
-            <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
-                {{ __('Profile') }}
-            </x-responsive-nav-link>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <x-responsive-nav-link href="#" onclick="event.preventDefault(); this.closest('form').submit();">
-                    {{ __('Log Out') }}
-                </x-responsive-nav-link>
-            </form>
-        @else
-            <x-responsive-nav-link :href="route('login')" :active="request()->routeIs('login')">
-                {{ __('Login') }}
-            </x-responsive-nav-link>
-            <footer class="bg-dark text-white mt-5 p-4 text-center">
-    <div class="container">
-        <p class="mb-1">&copy; {{ date('Y') }} Shop Demo. All rights reserved.</p>
-       
-    </div>
-</footer>
-
-        @endauth
-    </div>
+   
 </nav>
 
-
 <style>
-    /* Custom Classes */
-    .cart-product {
-        gap: 12px;
-        display: flex;
-        align-items: center;
-    }
-
     .nav-wrapper {
         background-color: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .dark .nav-wrapper {
-        background-color: #2d3748;
-        border-color: #374151;
+        border-bottom: 1px solid #e5e7eb;
+        position: sticky;
+        top: 0;
+        z-index: 50;
     }
 
     .nav-container {
@@ -147,110 +91,143 @@
 
     .nav-inner {
         display: flex;
+        align-items: center;
         justify-content: space-between;
         height: 4rem;
-        align-items: center;
     }
 
     .nav-logo-img {
-        height: 2.25rem;
-        width: auto;
-        fill: currentColor;
+        height: 2rem;
     }
 
     .nav-links {
         display: flex;
-        align-items: center;
+        gap: 1.5rem;
     }
 
-    .nav-links > * + * {
-        margin-left: 2rem;
-    }
-
-    .nav-auth {
+    .cart-product {
         display: flex;
         align-items: center;
-        margin-left: 1.5rem;
-    }
-
-    .auth-link {
-        font-size: 0.875rem;
-        color: #6b7280;
-        transition: 0.2s;
-    }
-
-    .auth-link:hover {
-        color: #374151;
+        gap: 1rem;
     }
 
     .auth-button {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        background: white;
-        color: #6b7280;
+        background: #f9fafb;
+        border: 1px solid #d1d5db;
+        padding: 0.5rem 1rem;
         border-radius: 0.375rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #374151;
+        cursor: pointer;
     }
 
-    .auth-input {
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-        border: 1px solid #ccc;
+    .auth-button:hover {
+        background: #f3f4f6;
+    }
+
+    .dropdown {
+        position: relative;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        border: 1px solid #ddd;
         border-radius: 0.375rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        min-width: 150px;
+        z-index: 100;
+        padding: 0.5rem 0;
+    }
+
+    .dropdown-menu.show {
+        display: block;
+    }
+
+    .dropdown-link {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: #374151;
+        text-decoration: none;
+    }
+
+    .dropdown-link:hover {
+        background-color: #f3f4f6;
+        color: #1f2937;
+    }
+
+    .nav-links a,
+    .cart-product a,
+    .mobile-nav a {
+        text-decoration: none !important;
+        color: #374151;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .nav-links a::after,
+    .cart-product a::after,
+    .mobile-nav a::after {
+        content: '';
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        background: #3b82f6;
+        bottom: -4px;
+        left: 0;
+        transition: width 0.3s ease-in-out;
+    }
+
+    .nav-links a:hover::after,
+    .cart-product a:hover::after,
+    .mobile-nav a:hover::after {
         width: 100%;
     }
 
+    .nav-links a:hover,
+    .cart-product a:hover,
+    .mobile-nav a:hover {
+        color: #1f2937;
+    }
+
     .nav-hamburger {
-        display: flex;
-        align-items: center;
+        display: none;
     }
 
     .hamburger-btn {
+        background: transparent;
+        border: none;
         padding: 0.5rem;
-        color: #9ca3af;
     }
 
     .hamburger-icon {
-        height: 1.5rem;
         width: 1.5rem;
+        height: 1.5rem;
+        color: #6b7280;
     }
 
-    .mobile-nav {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-        background: #fff;
-    }
-
-    .dark .mobile-nav {
-        background: #1f2937;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 639px) {
+    @media (max-width: 768px) {
         .nav-links {
             display: none;
         }
 
-        .mobile-nav {
-            display: block;
+        .nav-hamburger {
+            display: flex;
         }
+    }
 
-        .auth-input-mobile {
-            padding: 0.5rem;
-            margin: 0.5rem 0;
-            border: 1px solid #ccc;
-            border-radius: 0.375rem;
-            width: 100%;
-        }
+    .mobile-nav {
+        background: #ffffff;
+        padding: 1rem;
+    }
 
-        .auth-button-mobile {
-            padding: 0.5rem;
-            background-color: #3490dc;
-            color: white;
-            border: none;
-            border-radius: 0.375rem;
-            width: 100%;
-        }
+    .mobile-nav a {
+        display: block;
+        padding: 0.5rem 0;
     }
 </style>

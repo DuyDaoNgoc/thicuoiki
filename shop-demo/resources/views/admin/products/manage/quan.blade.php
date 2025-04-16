@@ -13,6 +13,7 @@
                 <table class="custom-table">
                     <thead>
                         <tr>
+                            <th>Hình ảnh</th>
                             <th>Tên sản phẩm</th>
                             <th>Giá</th>
                             <th>Tồn kho</th>
@@ -21,7 +22,13 @@
                     </thead>
                     <tbody>
                         @foreach ($products as $product)
-                            <tr>
+                        <td>
+                            @if($product->image)
+                                <img src="{{ asset($product->image) }}" alt="Hình ảnh" class="product-image">
+                            @else
+                                Không có ảnh
+                            @endif
+                        </td>  
                                 <td>{{ $product->name }}</td>
                                 <td>{{ number_format($product->price, 0, ',', '.') }}₫</td>
                                 <td>{{ $product->stock ?? 'Không rõ' }}</td>
@@ -43,87 +50,106 @@
     </div>
 @endsection
 
-@push('styles')
+
 <style>
     .custom-container {
-        max-width: 960px;
+        max-width: 1280px;
         margin: 40px auto;
         padding: 20px;
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     .title {
+        font-size: 24px;
+        font-weight: bold;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        color: #1f2937;
     }
 
     .alert-warning {
-        background-color: #fff3cd;
-        color: #856404;
-        padding: 15px;
-        border-radius: 6px;
+        background-color: #fff8e1;
+        color: #b45309;
+        padding: 16px;
+        border-radius: 8px;
         text-align: center;
+        font-weight: 500;
     }
 
     .table-wrapper {
         overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .custom-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 14px;
-        background-color: #f9f9f9;
+        font-size: 15px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
     }
 
     .custom-table th, .custom-table td {
-        border: 1px solid #ccc;
-        padding: 12px;
+        border: 1px solid #e5e7eb;
+        padding: 14px 12px;
         text-align: center;
+        color: #374151;
+        vertical-align: middle;
     }
 
     .custom-table thead {
-        background-color: #eee;
+        background-color: #f3f4f6;
+        font-weight: 600;
+    }
+
+    .product-image {
+        width: 60px;
+        height: auto;
+        border-radius: 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     }
 
     .actions {
         display: flex;
-        gap: 8px;
+        gap: 10px;
         justify-content: center;
         align-items: center;
     }
 
     .btn {
-        padding: 6px 12px;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
         text-decoration: none;
-        border-radius: 4px;
-        font-size: 13px;
-        cursor: pointer;
-        display: inline-block;
+        transition: background-color 0.2s ease;
     }
 
     .btn.info {
-        background-color: #17a2b8;
-        color: white;
+        background-color: #3b82f6;
+        color: #fff;
     }
 
     .btn.warning {
-        background-color: #ffc107;
-        color: black;
+        background-color: #facc15;
+        color: #1f2937;
     }
 
     .btn.danger {
-        background-color: #dc3545;
-        color: white;
+        background-color: #ef4444;
+        color: #fff;
         border: none;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
     }
 
     .inline-form {
         display: inline;
-    }
-
-    .btn:hover {
-        opacity: 0.85;
+        margin-bottom: 0;
     }
 </style>
-@endpush
+
