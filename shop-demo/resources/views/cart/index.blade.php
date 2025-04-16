@@ -152,54 +152,47 @@
         }
     }
 </style>
-
 <div class="cart-container">
-    <h1 class="cart-title">Giỏ Hàng</h1>
+    <h2 class="cart-title">Giỏ hàng của bạn</h2>
 
-    @if(session('cart') && count(session('cart')) > 0)
+    @if (session('success'))
+        <div class="mb-4 text-green-600 font-semibold">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(count($cart) > 0)
         <table class="cart-table">
             <thead>
                 <tr>
                     <th>Sản phẩm</th>
-                    <th>Số lượng</th>
                     <th>Giá</th>
-                    <th>Tổng</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                @php $totalPrice = 0; @endphp
-                @foreach(session('cart') as $productId => $item)
+                @foreach($cart as $item)
                     <tr>
                         <td>
                             <div class="cart-product">
                                 <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}">
-                                <a href="{{ route('product.detail', $productId) }}">{{ $item['name'] }}</a>
+                                <span>{{ $item['name'] }}</span>
                             </div>
-                        </td>
-                        <td>
-                            <form action="{{ route('cart.update') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $productId }}">
-                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1"
-                                       style="width: 60px; text-align: center; padding: 4px;">
-                                <button type="submit" class="btn-update">Cập nhật</button>
-                            </form>
                         </td>
                         <td>{{ number_format($item['price'], 0, ',', '.') }} đ</td>
                         <td>
-                            @php
-                                $totalPriceItem = $item['price'] * $item['quantity'];
-                                $totalPrice += $totalPriceItem;
-                            @endphp
-                            {{ number_format($totalPriceItem, 0, ',', '.') }} đ
-                        </td>
-                        <td>
-                            <form action="{{ route('cart.remove', ['id' => $productId]) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');">
+                            <form action="{{ route('cart.update') }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn-remove">Xóa</button>
+                                <input type="hidden" name="product_id" value="{{ $item['id'] }}">
+                                <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1">
+                                <button type="submit" class="btn-update">Cập nhật</button>
                             </form>
-                            
+                        </td>
+                        <td>{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }} đ</td>
+                        <td>
+                            <a href="{{ route('cart.remove', $item['id']) }}" class="btn-remove" onclick="return confirm('Bạn có chắc muốn xoá sản phẩm này?')">Xoá</a>
                         </td>
                     </tr>
                 @endforeach
@@ -207,11 +200,12 @@
         </table>
 
         <div class="cart-actions">
-            <p class="cart-total">Tổng cộng: {{ number_format($totalPrice, 0, ',', '.') }} đ</p>
+            <div class="cart-total">Tổng cộng: {{ number_format($totalPrice, 0, ',', '.') }} đ</div>
             <a href="{{ route('checkout') }}" class="btn-checkout">Tiến hành thanh toán</a>
         </div>
     @else
-        <p class="cart-empty">Giỏ hàng của bạn đang trống.</p>
+        <div class="cart-empty">Giỏ hàng của bạn đang trống.</div>
     @endif
 </div>
+
 @endsection

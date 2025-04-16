@@ -47,6 +47,42 @@
         border-radius: 8px;
     }
 </style>
+{{-- Quảng cáo slider --}}
+@if($advertisements->count() > 0)
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+    <div class="swiper-container advertisement-slider mb-4">
+        <div class="swiper-wrapper">
+            @foreach($advertisements as $ad)
+                <div class="swiper-slide">
+                    <img src="{{ asset($ad->image_path) }}" alt="{{ $ad->title }}" class="img-fluid rounded w-100" style="height: 300px; object-fit: cover;">
+                </div>
+            @endforeach
+        </div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slideCount = document.querySelectorAll('.swiper-slide').length;
+
+            var swiper = new Swiper('.advertisement-slider', {
+                loop: slideCount > 1, // ⚠️ bật loop chỉ khi có >1 slide
+                autoplay: {
+                    delay: 4000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+            });
+        });
+    </script>
+@endif
+
+
 
 <div class="container py-5">
     {{-- 🌟 Sản phẩm nổi bật --}}

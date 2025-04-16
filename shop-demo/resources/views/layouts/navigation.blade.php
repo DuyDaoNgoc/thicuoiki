@@ -4,7 +4,7 @@
             <!-- Logo -->
             <div class="nav-logo">
                 <a href="{{ route('home') }}">
-                    <x-application-logo class="nav-logo-img" />
+                    <img src="{{ asset('logo/logo-shop.png') }}" alt="Logo" class="nav-logo-img">
                 </a>
             </div>
 
@@ -97,7 +97,7 @@
     }
 
     .nav-logo-img {
-        height: 2rem;
+        height: 8rem;
     }
 
     .nav-links {
