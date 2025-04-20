@@ -12,7 +12,7 @@
             </div>
         @else
             <div class="table-wrapper">
-                <ul class="custom-list">
+                <ul class="custom-list">    
                     @foreach ($users as $user)
                         <li class="user-item">
                             <span class="user-info">{{ $user->name }} - {{ $user->email }}</span>

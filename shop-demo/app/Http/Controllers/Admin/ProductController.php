@@ -23,32 +23,38 @@ class ProductController extends Controller
         return view($view, compact('products'));
     }
 
+    // Quản lý sản phẩm áo
     public function manageAo()
     {
         return $this->getProductsByCategorySlug('ao', 'admin.products.manage.ao');
     }
 
+    // Quản lý sản phẩm quần
     public function manageQuan()
     {
         return $this->getProductsByCategorySlug('quan', 'admin.products.manage.quan');
     }
 
+    // Hiển thị tất cả sản phẩm
     public function index()
     {
         $products = Product::all();
         return view('admin.products.index', compact('products'));
     }
 
+    // Hiển thị form tạo mới sản phẩm
     public function create()
     {
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
 
+    // Lưu sản phẩm mới vào cơ sở dữ liệu
     public function store(Request $request)
     {
         $data = $this->validateProduct($request);
 
+        // Xử lý tải ảnh
         if ($request->hasFile('image')) {
             $data['image'] = $this->handleImageUpload($request->file('image'));
         }
@@ -58,16 +64,19 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
 
+    // Hiển thị form chỉnh sửa sản phẩm
     public function edit(Product $product)
     {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
+    // Cập nhật thông tin sản phẩm
     public function update(Request $request, Product $product)
     {
         $data = $this->validateProduct($request);
 
+        // Xử lý tải ảnh
         if ($request->hasFile('image')) {
             $data['image'] = $this->handleImageUpload($request->file('image'));
         }
@@ -77,6 +86,7 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Cập nhật sản phẩm thành công!');
     }
 
+    // Xoá sản phẩm
     public function destroy(Product $product)
     {
         try {
@@ -87,16 +97,39 @@ class ProductController extends Controller
         }
     }
 
-    public function show(Product $product, Request $request)
+    // Hiển thị chi tiết sản phẩm cho admin
+    public function showAdmin(Product $product, Request $request)
     {
         $backUrl = url()->previous();
         return view('admin.products.show', compact('product', 'backUrl'));
     }
 
-    // ========================
-    // Private helper functions
-    // ========================
+    // Hiển thị chi tiết sản phẩm cho người dùng
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
 
+        // Đảm bảo đường dẫn view là đúng cho người dùng
+        return view('shop.product-detail', compact('product'));
+    }
+
+    // Phương thức tìm kiếm sản phẩm
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        if ($query) {
+            $products = Product::where('name', 'like', '%' . $query . '%')
+                ->orWhere('description', 'like', '%' . $query . '%')
+                ->paginate(12);
+        } else {
+            $products = Product::paginate(12); // Nếu không có từ khóa, trả tất cả sản phẩm
+        }
+
+        return view('shop.search', compact('products', 'query'));
+    }
+
+    // Các hàm trợ giúp riêng tư
     private function validateProduct(Request $request)
     {
         return $request->validate([

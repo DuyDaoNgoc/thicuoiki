@@ -4,6 +4,11 @@
     <div class="custom-container">
         <h1 class="title">Quản lý sản phẩm loại Quần</h1>
 
+        <!-- Nút Thêm Sản Phẩm -->
+        <div class="add-product-btn-container">
+            <a href="{{ route('admin.products.create') }}" class="btn add-product">Thêm sản phẩm</a>
+        </div>
+
         @if ($products->isEmpty())
             <div class="alert-warning">
                 <p>Không có sản phẩm nào trong loại Quần.</p>
@@ -22,13 +27,14 @@
                     </thead>
                     <tbody>
                         @foreach ($products as $product)
-                        <td>
-                            @if($product->image)
-                                <img src="{{ asset($product->image) }}" alt="Hình ảnh" class="product-image">
-                            @else
-                                Không có ảnh
-                            @endif
-                        </td>  
+                            <tr>
+                                <td>
+                                    @if($product->image)
+                                        <img src="{{ asset($product->image) }}" alt="Hình ảnh" class="product-image">
+                                    @else
+                                        Không có ảnh
+                                    @endif
+                                </td>  
                                 <td>{{ $product->name }}</td>
                                 <td>{{ number_format($product->price, 0, ',', '.') }}₫</td>
                                 <td>{{ $product->stock ?? 'Không rõ' }}</td>
@@ -50,7 +56,6 @@
     </div>
 @endsection
 
-
 <style>
     .custom-container {
         max-width: 1280px;
@@ -65,6 +70,26 @@
         text-align: center;
         margin-bottom: 24px;
         color: #1f2937;
+    }
+
+    .add-product-btn-container {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .btn.add-product {
+        background-color: #10b981;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn.add-product:hover {
+        background-color: #059669;
     }
 
     .alert-warning {
@@ -152,4 +177,3 @@
         margin-bottom: 0;
     }
 </style>
-

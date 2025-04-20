@@ -1,3 +1,4 @@
+<!-- navigation.blade.php -->
 <nav x-data="{ open: false }" class="nav-wrapper">
     <div class="nav-container">
         <div class="nav-inner">
@@ -16,14 +17,28 @@
                 <x-nav-link :href="route('products')" :active="request()->routeIs('products')">
                     {{ __('Sản phẩm') }}
                 </x-nav-link>
-
-                @if(Auth::check() && Auth::user()->role === 'admin')
-                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
-                        {{ __('Quản trị') }}
-                    </x-nav-link>
-                @endif
+   <!-- Navigation Admin Link (visible only for admins) -->
+   @if(Auth::check() && Auth::user()->role === 'admin')
+   <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+       {{ __('Quản trị') }}
+   </x-nav-link>
+@endif
             </div>
 
+
+            <!-- Search Form -->
+            <div class="nav-search">
+                <form action="{{ route('shop.search') }}" method="GET" class="search-form">
+                    <input type="text" name="query" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+                    <button type="submit" class="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 011.3 7.8l5.5 5.5a1 1 0 11-1.4 1.4l-5.5-5.5A4 4 0 118 4z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+         
             <!-- User Auth Links -->
             <div class="cart-product">
                 <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')">
@@ -58,21 +73,12 @@
                     </x-nav-link>
                 @endif
             </div>
-
-            <!-- Hamburger -->
-            <div class="nav-hamburger">
-                <button @click="open = ! open" class="hamburger-btn">
-                    <svg class="hamburger-icon" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
         </div>
     </div>
-
-   
 </nav>
+
+
+
 
 <style>
     .nav-wrapper {
@@ -230,4 +236,55 @@
         display: block;
         padding: 0.5rem 0;
     }
+    /* Style cho form tìm kiếm */
+.nav-search {
+    display: flex;
+    align-items: center;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-input {
+    width: 200px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: #374151;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #3b82f6;
+}
+
+.search-button {
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+}
+
+.search-button .search-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    color: white;
+}
+
+.search-button:hover {
+    background-color: #2563eb;
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        width: 150px;
+    }
+}
+
 </style>

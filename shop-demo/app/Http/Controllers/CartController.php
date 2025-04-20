@@ -20,24 +20,32 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'nullable|integer|min:1'
+            'quantity' => 'nullable|integer|min:1',
+            'size' => 'nullable|string|max:10',
         ]);
 
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity', 1);
+        $size = $request->input('size', 'M'); // 👈 mặc định size M
 
         $product = Product::findOrFail($productId);
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity'] += $quantity;
+        $image = $product->image ?? 'default-product.jpg';
+
+        // 👇 tạo key riêng biệt theo id + size
+        $cartKey = $productId . '_' . $size;
+
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] += $quantity;
         } else {
-            $cart[$productId] = [
+            $cart[$cartKey] = [
                 'id' => $product->id,
                 'name' => $product->name,
                 'quantity' => $quantity,
                 'price' => $product->price,
-                'image' => $product->image,
+                'image' => $image,
+                'size' => $size,
             ];
         }
 
@@ -50,15 +58,19 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required',
-            'quantity' => 'required|integer|min:1'
+            'quantity' => 'required|integer|min:1',
+            'size' => 'required|string|max:10',
         ]);
 
         $productId = $request->input('product_id');
+        $size = $request->input('size');
         $quantity = $request->input('quantity');
 
+        $cartKey = $productId . '_' . $size;
+
         $cart = session()->get('cart', []);
-        if (isset($cart[$productId])) {
-            $cart[$productId]['quantity'] = $quantity;
+        if (isset($cart[$cartKey])) {
+            $cart[$cartKey]['quantity'] = $quantity;
             session()->put('cart', $cart);
         }
 
@@ -66,11 +78,11 @@ class CartController extends Controller
     }
 
     // Xoá sản phẩm khỏi giỏ
-    public function remove($id)
+    public function remove($key)
     {
         $cart = session()->get('cart', []);
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
+        if (isset($cart[$key])) {
+            unset($cart[$key]);
             session()->put('cart', $cart);
         }
 
@@ -82,21 +94,27 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'nullable|integer|min:1'
+            'quantity' => 'nullable|integer|min:1',
+            'size' => 'nullable|string|max:10',
         ]);
 
         $productId = $request->input('product_id');
         $quantity = $request->input('quantity', 1);
+        $size = $request->input('size', 'M');
 
         $product = Product::findOrFail($productId);
+        $image = $product->image ?? 'default-product.jpg';
+
+        $cartKey = $productId . '_' . $size;
 
         $cart = [
-            $productId => [ 
+            $cartKey => [
                 'id' => $product->id,
                 'name' => $product->name,
                 'quantity' => $quantity,
                 'price' => $product->price,
-                'image' => $product->image,
+                'image' => $image,
+                'size' => $size,
             ]
         ];
 

@@ -13,8 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        // Lấy tất cả người dùng trừ admin
-        $users = User::where('role', 'user')->get();
+        // Lấy tất cả người dùng
+        $users = User::all();
         return view('admin.users.index', compact('users'));
     }
 
@@ -43,7 +43,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->role = 'user';  // Hoặc 'admin' nếu tạo admin
+        $user->role = 'user';  // Mặc định là người dùng
         $user->save();
 
         return redirect()->route('admin.users.index')->with('success', 'Người dùng đã được tạo thành công.');
@@ -77,13 +77,14 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'nullable|min:8|confirmed',
+            'role' => 'required|in:user,admin',
         ]);
 
         $user = User::findOrFail($id);
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->role = $request->role;
 
-        // Nếu có thay đổi mật khẩu
         if ($request->filled('password')) {
             $user->password = bcrypt($request->password);
         }
@@ -91,6 +92,18 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->route('admin.users.index')->with('success', 'Người dùng đã được cập nhật thành công.');
+    }
+
+    /**
+     * Đặt người dùng làm admin.
+     */
+    public function makeAdmin(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->role = 'admin';
+        $user->save();
+
+        return redirect()->route('admin.users.index')->with('success', 'Người dùng đã được đẩy thành admin.');
     }
 
     /**

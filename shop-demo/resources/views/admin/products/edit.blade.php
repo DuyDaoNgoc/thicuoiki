@@ -140,7 +140,7 @@
             @if ($product->image)
                 <div class="form-group image-preview">
                     <label>Ảnh hiện tại:</label>
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="Ảnh sản phẩm">
+                    <img src="{{ asset($product->image) }}" alt="Hình ảnh" class="product-image">
                 </div>
             @endif
 

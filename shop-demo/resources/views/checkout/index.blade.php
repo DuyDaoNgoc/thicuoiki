@@ -122,12 +122,14 @@
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}" width="100px" height="100px" style="border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
 
-                    <div class="product-name">{{ $item['name'] }} x {{ $item['quantity'] }}</div>
+                    <div>
+                        <div class="product-name">{{ $item['name'] }} x {{ $item['quantity'] }}</div>
+                        <div style="font-size: 14px; color: #666;">Size: {{ $item['size'] ?? 'Mặc định' }}</div>
+                    </div>
                 </div>
                 <div>{{ number_format($item['price'] * $item['quantity'], 0, ',', '.') }} đ</div>
             </div>
-        @endforeach
-        
+            @endforeach
         </div>
         <div class="total-price">
             Tạm tính: {{ number_format($total, 0, ',', '.') }} đ

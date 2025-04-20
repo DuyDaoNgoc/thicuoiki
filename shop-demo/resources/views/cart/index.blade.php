@@ -29,6 +29,7 @@
         padding: 14px 10px;
         border-bottom: 1px solid #ddd;
         text-align: left;
+        vertical-align: top;
     }
 
     .cart-table th {
@@ -39,7 +40,7 @@
 
     .cart-product {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
     }
 
     .cart-product img {
@@ -51,14 +52,19 @@
         border: 1px solid #ddd;
     }
 
-    .cart-product a {
-        color: #007bff;
-        text-decoration: none;
+    .cart-product-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .cart-product-info .product-name {
         font-weight: 500;
     }
 
-    .cart-product a:hover {
-        text-decoration: underline;
+    .cart-product-info .product-size {
+        font-size: 14px;
+        color: #555;
+        margin-top: 4px;
     }
 
     .btn-update {
@@ -125,7 +131,6 @@
         color: #777;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
         .cart-table th, .cart-table td {
             padding: 10px 6px;
@@ -152,6 +157,7 @@
         }
     }
 </style>
+
 <div class="cart-container">
     <h2 class="cart-title">Giỏ hàng của bạn</h2>
 
@@ -178,7 +184,10 @@
                         <td>
                             <div class="cart-product">
                                 <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}">
-                                <span>{{ $item['name'] }}</span>
+                                <div class="cart-product-info">
+                                    <span class="product-name">{{ $item['name'] }}</span>
+                                    <span class="product-size">Size: {{ $item['size'] ?? 'Không có' }}</span>
+                                </div>
                             </div>
                         </td>
                         <td>{{ number_format($item['price'], 0, ',', '.') }} đ</td>
