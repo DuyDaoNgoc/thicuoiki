@@ -64,21 +64,26 @@ Route::prefix('cart')->group(function () {
 // 💖 YÊU THÍCH
 // ==============================
 Route::post('/favorite/add', [FavoriteController::class, 'add'])->name('favorite.add');
-
 // ==============================
-// 💳 THANH TOÁN
-// ==============================
-// ==============================
+/// ==============================
 // 💳 THANH TOÁN
 // ==============================
 Route::prefix('checkout')->group(function () {
-    Route::get('/', [CheckoutController::class, 'index'])->name('checkout'); // ← sửa lại tên route
+    // Trang thanh toán (GET)
+    Route::get('/', [CheckoutController::class, 'index'])->name('checkout.index'); // ✅ sửa tên route
+
+    // Xử lý thanh toán sau khi submit (POST)
     Route::post('/', [CheckoutController::class, 'process'])->name('checkout.process');
+
+    // Mua ngay không cần thêm vào giỏ (POST)
     Route::post('/buy-now', [CartController::class, 'buyNow'])->name('checkout.buyNow');
-    Route::post('/buy', [CartController::class, 'buyNow'])->name('checkout.buy'); // optional
+
+    // Tùy chọn khác cho "buy" (POST)
+    Route::post('/buy', [CartController::class, 'buyNow'])->name('checkout.buy');
 });
 
 
+    
 // ==============================
 // 📦 ĐƠN HÀNG NGƯỜI DÙNG
 // ==============================
@@ -145,7 +150,6 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::resource('categories', CategoryController::class);
     Route::resource('slides', SlideController::class);
     Route::resource('advertisements', AdvertisementController::class);
-
     // Cập nhật quyền
     Route::post('users/{id}/make-admin', [UserController::class, 'makeAdmin'])->name('users.makeAdmin');
 

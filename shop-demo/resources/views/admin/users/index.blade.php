@@ -4,7 +4,7 @@
     <div class="custom-container">
         <h1 class="title">Danh sách Người dùng</h1>
         
-        <a href="{{ route('admin.users.create') }}" class="btn info">Tạo Người dùng mới</a>
+       
 
         @if ($users->isEmpty())
             <div class="alert-warning">

@@ -210,7 +210,7 @@
 
         <div class="cart-actions">
             <div class="cart-total">Tổng cộng: {{ number_format($totalPrice, 0, ',', '.') }} đ</div>
-            <a href="{{ route('checkout') }}" class="btn-checkout">Tiến hành thanh toán</a>
+            <a href="{{ route('checkout.index') }}" class="btn-checkout">Tiến hành thanh toán</a>
         </div>
     @else
         <div class="cart-empty">Giỏ hàng của bạn đang trống.</div>
